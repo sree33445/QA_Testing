@@ -3,14 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-
 const SignupPage = () => {
     const router = useRouter();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [passwordStrength, setPasswordStrength] = useState(0);
-    const [passwordError, setPasswordError] = useState('');
     const [role, setRole] = useState('student');
 
     const roleRedirects = {
@@ -25,24 +22,10 @@ const SignupPage = () => {
     const handlePasswordChange = (e) => {
         const newPassword = e.target.value;
         setPassword(newPassword);
-
-        const strength = passwordUtils.calculateStrength(newPassword);
-        setPasswordStrength(strength);
-
-        if (newPassword && !passwordUtils.isStrongPassword(newPassword)) {
-            setPasswordError('Password must be at least 12 characters and include uppercase, lowercase, numbers, and special characters.');
-        } else {
-            setPasswordError('');
-        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!passwordUtils.isStrongPassword(password)) {
-            setPasswordError('Please create a stronger password.');
-            return;
-        }
 
         try {
             const response = await fetch('/api/signup', {
@@ -122,8 +105,6 @@ const SignupPage = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
                             placeholder="Create a strong password"
                         />
-                        
-                        
                     </div>
 
                     <button
@@ -134,7 +115,6 @@ const SignupPage = () => {
                     </button>
                     <div className="flex justify-between items-center space-x-2">
                         <p className="text-gray-600">Already have an account?    <a href="/logincomponents/login" className="text-blue-600 hover:text-blue-800 hover:underline">Login</a></p>
-                        
                     </div>
                 </form>
                 <p></p>

@@ -6,7 +6,7 @@ const page = () => {
   return (
     <div>
         <Student />
-        <StudentExam/>
+        {/* <StudentExam/> */}
     </div>
   )
 }

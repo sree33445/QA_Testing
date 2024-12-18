@@ -1,41 +1,62 @@
 'use client'
-
 import React from 'react'
+import { 
+  LogOut, 
+  ClipboardList, 
+  GraduationCap, 
+  BarChart 
+} from 'lucide-react'
 
 const Student = () => {
   return (
-    <div>
-      <div className="min-h-screen bg-gradient-to-br from-indigo-400 to-blue-300 flex flex-col">
-        <header className="bg-blue-600 text-white py-4 text-center text-xl font-bold relative">
-          Student Portal
-          <a href='/'>
-            <button className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow-md text-sm transition-colors duration-200">
-              Logout
-            </button>
-          </a>
-        </header>
-        <main className="flex-grow flex flex-col items-center justify-center space-y-6">
-          <h1 className="text-4xl font-bold text-white">Welcome, Student!</h1>
-          <p className="text-lg text-gray-100">Access exams and results in one place.</p>
-          <div className="space-x-4">
-            <a
-              href="/student/studentexam"
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded shadow-md"
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-sky-200 flex flex-col antialiased">
+      <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+        <div className="flex items-center space-x-3">
+          <GraduationCap className="text-blue-600 w-8 h-8" />
+          <h2 className="text-xl font-semibold text-gray-800">Student Portal</h2>
+        </div>
+        <button className="group flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors duration-300 ease-in-out">
+          <LogOut className="w-5 h-5 group-hover:animate-pulse" />
+          <span>Logout</span>
+        </button>
+      </header>
+
+      <main className="flex-grow container mx-auto px-4 py-12 max-w-4xl flex flex-col items-center justify-center">
+        <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-md space-y-6 text-center">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-gray-800">Welcome, Student</h1>
+            <p className="text-gray-500">Manage your academic journey</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <a 
+              href="/student/studentexam" 
+              className="group bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg p-4 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md"
             >
-              Take Exam
+              <div className="flex flex-col items-center space-y-2">
+                <ClipboardList className="w-8 h-8 text-green-600 group-hover:animate-bounce" />
+                <span className="text-green-800 font-semibold">Take Exam</span>
+              </div>
             </a>
-            <a
-              href="/results"
-              className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded shadow-md"
+
+            <a 
+              href="/student/result" 
+              className="group bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg p-4 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-md"
             >
-              View Results
+              <div className="flex flex-col items-center space-y-2">
+                <BarChart className="w-8 h-8 text-yellow-600 group-hover:animate-pulse" />
+                <span className="text-yellow-800 font-semibold">View Results</span>
+              </div>
             </a>
           </div>
-        </main>
-        <footer className="bg-blue-600 text-white py-2 text-center text-sm">
-          © 2024 Student Portal. All rights reserved.
-        </footer>
-      </div>
+        </div>
+      </main>
+
+      <footer className="bg-white shadow-md py-4 text-center">
+        <p className="text-sm text-gray-500">
+          © 2024 Student Portal. All Rights Reserved.
+        </p>
+      </footer>
     </div>
   )
 }
