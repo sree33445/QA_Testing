@@ -1,10 +1,13 @@
 import React from 'react'
 import CompanyReprtv from '../components/companyrepresentative/CompanyReprtv'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 const page = () => {
   return (
     <div>
-        <CompanyReprtv/>
+      <ProtectedRoute>
+        <CompanyReprtv />
+      </ProtectedRoute>
     </div>
   )
 }

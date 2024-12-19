@@ -1,10 +1,13 @@
 import React from 'react'
 import Mentor from '../components/mentor/Mentor'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 const page = () => {
   return (
     <div>
-        <Mentor/>
+      <ProtectedRoute>
+        <Mentor />
+      </ProtectedRoute>
     </div>
   )
 }

@@ -1,12 +1,13 @@
 import React from 'react'
 import Student from '../components/student/Student'
-import StudentExam from '../components/student/StudentExam'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 const page = () => {
   return (
     <div>
+      <ProtectedRoute>
         <Student />
-        {/* <StudentExam/> */}
+      </ProtectedRoute>
     </div>
   )
 }
