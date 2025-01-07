@@ -1,10 +1,13 @@
 import React from 'react'
 import Teacher from '../components/teacher/Teacher'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 const page = () => {
   return (
     <div>
-        <Teacher/>
+      <ProtectedRoute>
+        <Teacher />
+      </ProtectedRoute>
     </div>
   )
 }

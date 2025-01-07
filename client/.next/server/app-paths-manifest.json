@@ -1,6 +1,4 @@
 {
-  "/api/signup/route": "app/api/signup/route.js",
-  "/page": "app/page.js",
-  "/logincomponents/signup/page": "app/logincomponents/signup/page.js",
-  "/superadmin/page": "app/superadmin/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/studentexam/page": "app/studentexam/page.js"
 }

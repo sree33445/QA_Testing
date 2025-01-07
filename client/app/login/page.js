@@ -1,10 +1,10 @@
 import React from 'react'
-import Home from './components/Home'
+import LoginForm from '../components/loginsignup/Login'
 
 const page = () => {
   return (
     <div>
-      <Home />
+        <LoginForm />
     </div>
   )
 }
