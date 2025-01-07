@@ -26,6 +26,7 @@ const MentorDashboard = () => {
     const [testData, setTestData] = useState({
       name: '',
       date: '',
+      time: '',
       duration: '',
       totalMarks: '',
       description: ''
@@ -37,6 +38,7 @@ const MentorDashboard = () => {
       setTestData({
         name: '',
         date: '',
+        time: '',
         duration: '',
         totalMarks: '',
         description: ''
@@ -84,6 +86,20 @@ const MentorDashboard = () => {
                 className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
                 value={testData.date}
                 onChange={(e) => setTestData({ ...testData, date: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="test-time">
+                Start Time
+              </label>
+              <input
+                id="test-time"
+                type="time"
+                required
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                value={testData.time}
+                onChange={(e) => setTestData({ ...testData, time: e.target.value })}
               />
             </div>
 
