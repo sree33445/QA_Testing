@@ -11,10 +11,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/teacher/page": [
+    "/logincomponents/signup/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/teacher/page.js"
+      "static/chunks/app/logincomponents/signup/page.js"
+    ],
+    "/api/signup/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/signup/route.js"
+    ],
+    "/superadmin/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/superadmin/page.js"
     ]
   }
 }
