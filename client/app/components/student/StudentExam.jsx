@@ -4,7 +4,7 @@ import { Search, Clock, BookOpen, AlertCircle, NotebookPen } from 'lucide-react'
 
 const StudentTestPage = () => {
   const [availableTests, setAvailableTests] = useState([
-    { id: 1, title: 'High School Math', subject: 'Math', duration: '60 minutes', difficulty: 'Intermediate', questions: 30 },
+    { id: 1, title: 'H S Math', subject: 'Math', duration: '60 minutes', difficulty: 'Intermediate', questions: 30 },
     { id: 2, title: 'Primary Science', subject: 'Science', duration: '45 minutes', difficulty: 'Beginner', questions: 25 },
     { id: 3, title: 'Angular (IT)', subject: 'Angular', duration: '90 minutes', difficulty: 'Advanced', questions: 40 },
     { id: 4, title: 'PySpark (IT)', subject: 'PySpark', duration: '90 minutes', difficulty: 'Advanced', questions: 35 }
