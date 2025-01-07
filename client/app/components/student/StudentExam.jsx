@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Search, Clock, BookOpen, AlertCircle } from 'lucide-react';
+import { Search, Clock, BookOpen, AlertCircle, NotebookPen } from 'lucide-react';
 
 const StudentTestPage = () => {
   const [availableTests, setAvailableTests] = useState([
@@ -26,78 +26,52 @@ const StudentTestPage = () => {
 
   const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 
-  const getDifficultyStyles = (difficulty) => {
+  const getDifficultyTag = (difficulty) => {
     switch (difficulty.toLowerCase()) {
       case 'beginner':
-        return {
-          badge: 'bg-emerald-100 text-emerald-800',
-          header: 'bg-gradient-to-r from-emerald-500 to-green-600',
-          button: 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
-        };
+        return 'text-blue-700 bg-blue-50';
       case 'intermediate':
-        return {
-          badge: 'bg-amber-100 text-amber-800',
-          header: 'bg-gradient-to-r from-amber-500 to-orange-600',
-          button: 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
-        };
+        return 'text-slate-700 bg-slate-50';
       case 'advanced':
-        return {
-          badge: 'bg-rose-100 text-rose-800',
-          header: 'bg-gradient-to-r from-rose-500 to-red-600',
-          button: 'bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700'
-        };
+        return 'text-gray-700 bg-gray-50';
       default:
-        return {
-          badge: 'bg-gray-100 text-gray-800',
-          header: 'bg-gradient-to-r from-gray-500 to-slate-600',
-          button: 'bg-gradient-to-r from-gray-500 to-slate-600 hover:from-gray-600 hover:to-slate-700'
-        };
+        return 'text-slate-700 bg-slate-50';
     }
-  };
-
-  const getDifficultyButtonColor = (difficulty) => {
-    if (selectedDifficulty === difficulty) {
-      switch (difficulty.toLowerCase()) {
-        case 'beginner': return 'bg-emerald-600 text-white';
-        case 'intermediate': return 'bg-amber-600 text-white';
-        case 'advanced': return 'bg-rose-600 text-white';
-        case 'all': return 'bg-blue-600 text-white';
-        default: return 'bg-blue-600 text-white';
-      }
-    }
-    return 'bg-white text-gray-600 hover:bg-gray-100';
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-800">
-            Available Tests
-          </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Select from our comprehensive range of assessment materials designed to evaluate and enhance your knowledge.
-          </p>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
+      <div className="mb-12 flex items-center gap-3">
+  <NotebookPen size={32} className="text-gray-900" />
+  <h1 className="text-4xl font-semibold text-gray-900">Available Tests</h1>
+</div>
+<p className="text-lg text-gray-600">
+  Select an assessment from the available options below
+</p>
 
-        <div className="mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
+
+        <div className="mb-8 space-y-6">
+          <div className="flex flex-col sm:flex-row gap-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search tests..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                className="w-full pl-12 pr-6 py-3.5 text-lg border border-gray-200 rounded-lg focus:outline-none focus:border-gray-300 focus:ring-1 focus:ring-gray-300"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-3 flex-wrap">
               {difficulties.map(difficulty => (
                 <button
                   key={difficulty}
                   onClick={() => setSelectedDifficulty(difficulty)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${getDifficultyButtonColor(difficulty)}`}
+                  className={`px-6 py-3.5 text-base border rounded-lg
+                    ${selectedDifficulty === difficulty 
+                      ? 'border-gray-400 bg-gray-100 text-gray-700' 
+                      : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'}`}
                 >
                   {difficulty}
                 </button>
@@ -106,9 +80,9 @@ const StudentTestPage = () => {
           </div>
 
           {filteredTests.length === 0 && (
-            <div className="bg-rose-50 border-l-4 border-rose-400 p-4 rounded-lg flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-rose-400" />
-              <p className="text-rose-700">
+            <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg flex items-center gap-4">
+              <AlertCircle className="h-6 w-6 text-gray-400" />
+              <p className="text-gray-600 text-base">
                 No tests found matching your search criteria. Try adjusting your filters.
               </p>
             </div>
@@ -116,64 +90,46 @@ const StudentTestPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTests.map((test) => {
-            const styles = getDifficultyStyles(test.difficulty);
-            return (
-              <div
-                key={test.id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-              >
-                <div className={`${styles.header} p-6`}>
-                  <h2 className="text-2xl font-bold text-white mb-2 truncate">
+          {filteredTests.map((test) => (
+            <div
+              key={test.id}
+              className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 transition-colors"
+            >
+              <div className="p-8 border-b border-gray-100">
+                <div className="flex justify-between items-start mb-6">
+                  <h2 className="text-2xl font-medium text-gray-900 leading-tight">
                     {test.title}
                   </h2>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${styles.badge}`}>
+                  <span className={`inline-block px-4 py-2 text-sm font-medium rounded-full ${getDifficultyTag(test.difficulty)}`}>
                     {test.difficulty}
                   </span>
                 </div>
-                <div className="p-6 space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <BookOpen className="h-4 w-4" />
-                        <span>Subject:</span>
-                      </div>
-                      <span className="font-semibold text-gray-800 bg-slate-100 px-3 py-1 rounded-full">
-                        {test.subject}
-                      </span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <Clock className="h-4 w-4" />
-                        <span>Duration:</span>
-                      </div>
-                      <span className="font-semibold text-gray-800 bg-slate-100 px-3 py-1 rounded-full">
-                        {test.duration}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm border-t pt-3">
-                      <span className="text-gray-600">Questions:</span>
-                      <span className="font-semibold text-gray-800">
-                        {test.questions} questions
-                      </span>
-                    </div>
+                <div className="grid grid-cols-2 gap-6 text-base">
+                  <div className="flex items-center gap-3 text-gray-500">
+                    <BookOpen className="h-5 w-5" />
+                    <span>{test.subject}</span>
                   </div>
-
-                  <button
-                    onClick={() => handleStartTest(test.id)}
-                    className={`w-full py-3 text-white font-bold rounded-lg 
-                             transition-all duration-300 
-                             transform hover:scale-105 
-                             focus:outline-none focus:ring-2 focus:ring-offset-2 ${styles.button}`}
-                  >
-                    Start Test
-                  </button>
+                  <div className="flex items-center gap-3 text-gray-500">
+                    <Clock className="h-5 w-5" />
+                    <span>{test.duration}</span>
+                  </div>
                 </div>
               </div>
-            );
-          })}
+
+              <div className="p-8 bg-gray-50">
+                <div className="flex justify-between items-center mb-6 text-base text-gray-600">
+                  <span>Total Questions</span>
+                  <span className="font-medium text-lg">{test.questions}</span>
+                </div>
+                <button
+                  onClick={() => handleStartTest(test.id)}
+                  className="w-full px-6 py-4 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Begin Assessment
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
