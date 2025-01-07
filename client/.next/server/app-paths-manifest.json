@@ -1,8 +1,8 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/api/login/route": "app/api/login/route.js",
-  "/signup/page": "app/signup/page.js",
-  "/teacher/page": "app/teacher/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
   "/login/page": "app/login/page.js",
-  "/page": "app/page.js"
+  "/mentor/page": "app/mentor/page.js"
 }
