@@ -64,6 +64,12 @@ const TeacherDashboard = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [questions, setQuestions] = useState([]);
+  
+  const [showAddClassModal, setShowAddClassModal] = useState(false);
+  const [newClassName, setNewClassName] = useState("");
+  const [newClassStudents, setNewClassStudents] = useState("");
+  const [classes, setClasses] = useState(teacherData.classes);
+
   const [recentActivity, setRecentActivity] = useState(
     teacherData.recentActivity
   );
@@ -79,6 +85,26 @@ const TeacherDashboard = () => {
   if (!user) {
     return null;
   }
+
+  const handleAddClass = (e) => {
+    e.preventDefault();
+
+    // Create a new class object
+    const newClass = {
+      id: classes.length + 1,
+      name: newClassName,
+      students: parseInt(newClassStudents),
+      pendingAssignments: 0, // Default value for new classes
+    };
+
+    // Add the new class to the list
+    setClasses([newClass, ...classes]);
+
+    // Close the modal and reset form
+    setNewClassName("");
+    setNewClassStudents("");
+    setShowAddClassModal(false);
+  };
 
   const handleSubmitQuestion = (e) => {
     e.preventDefault();
@@ -279,26 +305,32 @@ const TeacherDashboard = () => {
 
           {/* My Classes */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">My Classes</h2>
-            {teacherData.classes.map((cls) => (
-              <div
-                key={cls.id}
-                className="border-b py-3 last:border-b-0 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium text-gray-700">{cls.name}</p>
-                    <p className="text-sm text-gray-500">
-                      {cls.students} Students
-                    </p>
-                  </div>
-                  <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">
-                    {cls.pendingAssignments} Pending
-                  </span>
-                </div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">My Classes</h2>
+          <button
+            onClick={() => setShowAddClassModal(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Add Class
+          </button>
+        </div>
+        {classes.map((cls) => (
+          <div
+            key={cls.id}
+            className="border-b py-3 last:border-b-0 hover:bg-gray-50 transition-colors"
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-medium text-gray-700">{cls.name}</p>
+                <p className="text-sm text-gray-500">{cls.students} Students</p>
               </div>
-            ))}
+              <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">
+                {cls.pendingAssignments} Pending
+              </span>
+            </div>
           </div>
+        ))}
+      </div>
         </div>
       </>
     );
@@ -360,6 +392,57 @@ const TeacherDashboard = () => {
       {/* Main Content */}
       <div className="flex-grow p-8">
         {renderMainContent()}
+
+           {/* Add Class Modal */}
+      {showAddClassModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Add New Class</h2>
+              <button
+                onClick={() => setShowAddClassModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleAddClass}>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Class Name
+                </label>
+                <input
+                  type="text"
+                  value={newClassName}
+                  onChange={(e) => setNewClassName(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                  placeholder="Enter class name"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Number of Students
+                </label>
+                <input
+                  type="number"
+                  value={newClassStudents}
+                  onChange={(e) => setNewClassStudents(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                  placeholder="Enter number of students"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Add Class
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
         {/* Add Question Modal */}
         {showQuestionModal && (
@@ -440,7 +523,7 @@ const TeacherDashboard = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default TeacherDashboard;
