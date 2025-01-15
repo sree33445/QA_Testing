@@ -126,10 +126,12 @@ const ResultPage = () => {
           <div className="space-y-6">
             {selectedExam.questions.map((question, index) => {
               const questionScore = selectedExam.scores[question.id];
-              const maxQuestionScore = question.type === 'single' 
-                ? question.weightage * Math.max(...question.options.map(opt => opt.weightage))
-                : question.weightage * question.options.filter(opt => opt.weightage > 0)
-                    .reduce((sum, opt) => sum + opt.weightage, 0);
+              const maxQuestionScore = question.type === 'single' || question.type === 'multiple'
+  ? question.weightage * (question.options ? question.options
+      .filter(opt => opt.weightage > 0)
+      .reduce((sum, opt) => sum + opt.weightage, 0) : 0)
+  : question.weightage; // For descriptive questions, max score is the question weightage
+
               const questionPercentage = (questionScore / maxQuestionScore) * 100;
 
               return (
@@ -147,9 +149,10 @@ const ResultPage = () => {
                   </div>
 
                   <div className="space-y-2 mb-4">
-                    {question.options.map((option, optIndex) => {
-                      const isSelected = selectedExam.answers[question.id]?.some(ans => ans.text === option.text);
-                      const isCorrect = option.weightage > 0;
+                  {question.options && question.options.map((option, optIndex) => {
+  const isSelected = selectedExam.answers[question.id]?.some(ans => ans.text === option.text);
+  const isCorrect = option.weightage > 0;
+
                       
                       return (
                         <div 

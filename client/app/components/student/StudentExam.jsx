@@ -1,14 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Search,
   Clock,
   BookOpen,
   AlertCircle,
   NotebookPen,
-  ArrowBigLeft,
+  LogOut,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 
 const StudentTestPage = () => {
   const [availableTests, setAvailableTests] = useState([
@@ -19,6 +20,7 @@ const StudentTestPage = () => {
       duration: "60 minutes",
       difficulty: "Intermediate",
       questions: 30,
+      teacher: "Mr. John Doe",
     },
     {
       id: 2,
@@ -27,6 +29,7 @@ const StudentTestPage = () => {
       duration: "45 minutes",
       difficulty: "Beginner",
       questions: 25,
+      teacher: "Ms. Jane Smith",
     },
     {
       id: 3,
@@ -35,6 +38,7 @@ const StudentTestPage = () => {
       duration: "90 minutes",
       difficulty: "Advanced",
       questions: 40,
+      teacher: "Dr. Emily Brown",
     },
     {
       id: 4,
@@ -43,17 +47,39 @@ const StudentTestPage = () => {
       duration: "90 minutes",
       difficulty: "Advanced",
       questions: 35,
+      teacher: "Prof. Michael Lee",
     },
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
+  const [completedTests, setCompletedTests] = useState([]);
 
+  const { user, logout } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/"); // Redirect if not logged in
+    }
+
+    // Load completed tests from localStorage
+    const storedCompletedTests = JSON.parse(localStorage.getItem("completedTests")) || [];
+    setCompletedTests(storedCompletedTests);
+  }, [user, router]);
+
+  if (!user) {
+    return null;
+  }
 
   const handleStartTest = (testId) => {
     console.log(`Starting test with ID: ${testId}`);
     router.push("/test");
+
+    // Mark test as completed and save to localStorage
+    const updatedCompletedTests = [...completedTests, testId];
+    setCompletedTests(updatedCompletedTests);
+    localStorage.setItem("completedTests", JSON.stringify(updatedCompletedTests));
   };
 
   const filteredTests = availableTests.filter((test) => {
@@ -90,12 +116,15 @@ const StudentTestPage = () => {
               Available Tests
             </h1>
           </div>
-          <div
-            className="flex items-center gap-3 cursor-pointer"
-            onClick={() => router.push("/student")}
-          >
-            <ArrowBigLeft size={32} className="text-gray-900" />
-            <h1 className="text-lg font-medium text-gray-900">Go Back</h1>
+
+          <div className="flex gap-4 items-center">
+            <button
+              onClick={logout}
+              className="group flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors duration-300 ease-in-out"
+            >
+              <LogOut className="w-5 h-5 group-hover:animate-pulse" />
+              <span>Logout</span>
+            </button>
           </div>
         </div>
 
@@ -176,15 +205,24 @@ const StudentTestPage = () => {
               </div>
 
               <div className="p-8 bg-gray-50">
+                <div className="mb-4 text-base text-gray-600">
+                  <span className="font-medium">Teacher/Mentor: </span>
+                  <span>{test.teacher}</span>
+                </div>
                 <div className="flex justify-between items-center mb-6 text-base text-gray-600">
                   <span>Total Questions</span>
                   <span className="font-medium text-lg">{test.questions}</span>
                 </div>
                 <button
                   onClick={() => handleStartTest(test.id)}
-                  className="w-full px-6 py-4 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  disabled={completedTests.includes(test.id)}
+                  className={`w-full px-6 py-4 text-base font-medium rounded-lg transition ${
+                    completedTests.includes(test.id)
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }`}
                 >
-                  Start Exam
+                  {completedTests.includes(test.id) ? "Done" : "Start Exam"}
                 </button>
               </div>
             </div>

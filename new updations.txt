@@ -1,0 +1,5 @@
+login based on password or email
+class creation based on student count by teacher
+as student , he/she should see his teacher or mentor and available class
+
+if test available take test button otherwise disable the button based on open/ closed

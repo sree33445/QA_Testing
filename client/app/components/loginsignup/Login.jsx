@@ -32,7 +32,7 @@ const LoginForm = () => {
         login(result.user); // Save user data to context
         switch (result.user.role) {
           case 'student':
-            router.push('/student');
+            router.push('/studentexam');
             break;
           case 'teacher':
             router.push('/teacher');
