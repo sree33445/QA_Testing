@@ -1,4 +1,10 @@
 login based on password or email
+teacher? mentor?
+qns bulk aayit aano atho subject koode create aakkuaano?
+who creates class?
+
+-----------------------------------------------------------------------------
+
 class creation based on student count by teacher
 as student , he/she should see his teacher or mentor and available class
 

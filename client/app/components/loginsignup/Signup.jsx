@@ -11,7 +11,7 @@ const SignupPage = () => {
     const [role, setRole] = useState('student');
 
     const roleRedirects = {
-        'student': '/student',
+        'student': '/studentexam',
         'teacher': '/teacher',
         'mentor': '/mentor',
         'eduvocate-sub-admin': '/subadmin',
