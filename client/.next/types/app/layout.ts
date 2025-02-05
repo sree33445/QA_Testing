@@ -1,4 +1,4 @@
-// File: D:\QA_Testing\client\app\layout.js
+// File: /home/shabeeb/Desktop/QA_Testing/client/app/layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
