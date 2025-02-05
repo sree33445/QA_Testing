@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
+import GenerateQuestion from "../questiongeneration/GenerateQuestion";
 
 // Mock data for dashboard
 const teacherData = {
@@ -64,15 +65,15 @@ const TeacherDashboard = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [questions, setQuestions] = useState([]);
-  
+  const [selectedQuestionType, setSelectedQuestionType] = useState("");
+  const [weightage, setWeightage] = useState("");
+
   const [showAddClassModal, setShowAddClassModal] = useState(false);
   const [newClassName, setNewClassName] = useState("");
   const [newClassStudents, setNewClassStudents] = useState("");
   const [classes, setClasses] = useState(teacherData.classes);
 
-  const [recentActivity, setRecentActivity] = useState(
-    teacherData.recentActivity
-  );
+  const [recentActivity, setRecentActivity] = useState(teacherData.recentActivity);
   const { user, logout } = useAuth();
   const router = useRouter();
 
@@ -119,6 +120,8 @@ const TeacherDashboard = () => {
       subject: selectedSubject,
       className: selectedClassName,
       classId: parseInt(selectedClass),
+      questionType: selectedQuestionType, // Store the question type (MCQ/Descriptive)
+      weightage: parseInt(weightage), // Store the weightage
       date: new Date().toISOString(),
       status: "Pending",
       responses: 0,
@@ -140,6 +143,8 @@ const TeacherDashboard = () => {
     setQuestion("");
     setSelectedClass("");
     setSelectedSubject("");
+    setSelectedQuestionType(""); // Reset the question type
+    setWeightage(""); // Reset the weightage
     setShowQuestionModal(false);
   };
 
@@ -159,11 +164,7 @@ const TeacherDashboard = () => {
     <button
       onClick={() => setActiveSection(section)}
       className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all 
-        ${
-          activeSection === section
-            ? "bg-blue-100 text-blue-700"
-            : "hover:bg-gray-100 text-gray-600"
-        }`}
+        ${activeSection === section ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100 text-gray-600"}`}
     >
       <Icon className="w-5 h-5" />
       <span className="font-medium">{label}</span>
@@ -171,13 +172,11 @@ const TeacherDashboard = () => {
   );
 
   const renderMainContent = () => {
-    if (activeSection === "assignments") {
+    if (activeSection === "tests") {
       return (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Questions & Assignments
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800">Questions & Assignments</h2>
             <button
               onClick={() => setShowQuestionModal(true)}
               className="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
@@ -198,12 +197,7 @@ const TeacherDashboard = () => {
                     <div className="flex justify-between items-start">
                       <div>
                         <h1 className="font-bold text-gray-800">{q.subject}</h1>
-                        <h3 className="font-medium text-gray-800">
-                          {q.question}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Class: {q.className}
-                        </p>
+                        <h3 className="font-medium text-gray-800">{q.question}</h3>
                         <p className="text-sm text-gray-500">
                           Posted: {new Date(q.date).toLocaleDateString()}
                         </p>
@@ -212,17 +206,13 @@ const TeacherDashboard = () => {
                         <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs mb-2">
                           {q.status}
                         </span>
-                        <span className="text-sm text-gray-500">
-                          {q.responses} responses
-                        </span>
+                        <span className="text-sm text-gray-500">{q.responses} responses</span>
                       </div>
                     </div>
                   </div>
                 ))}
                 {questions.length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
-                    No questions added yet
-                  </p>
+                  <p className="text-gray-500 text-center py-4">No questions added yet</p>
                 )}
               </div>
             </div>
@@ -257,7 +247,7 @@ const TeacherDashboard = () => {
           />
           <DashboardCard
             icon={ClipboardList}
-            title="Pending Assignments"
+            title="Pending Tests"
             value={teacherData.classes.reduce(
               (sum, cls) => sum + cls.pendingAssignments,
               0
@@ -282,248 +272,88 @@ const TeacherDashboard = () => {
         <div className="grid grid-cols-2 gap-8">
           {/* Recent Activity */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
             {recentActivity.map((activity) => (
               <div
                 key={activity.id}
-                className="border-b py-3 last:border-b-0 hover:bg-gray-50 transition-colors"
+                className="flex justify-between items-center border-b last:border-b-0 pb-4 last:pb-0"
               >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium text-gray-700">
-                      {activity.description}
-                    </p>
-                    <p className="text-sm text-gray-500">{activity.time}</p>
-                  </div>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
-                    {activity.type}
+                <div>
+                  <h3 className="font-medium text-gray-800">{activity.description}</h3>
+                  <p className="text-sm text-gray-500">{activity.time}</p>
+                </div>
+              </div>
+            ))}
+            {recentActivity.length === 0 && (
+              <p className="text-gray-500 text-center py-4">No recent activities</p>
+            )}
+          </div>
+
+          {/* Classes */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Classes</h2>
+            {classes.map((cls) => (
+              <div key={cls.id} className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-lg text-gray-800">{cls.name}</h3>
+                <div className="flex flex-col items-end">
+                  <span className="text-sm text-gray-500">{cls.students} students</span>
+                  <span className="text-sm text-gray-500">
+                    {cls.pendingAssignments} assignments
                   </span>
                 </div>
               </div>
             ))}
+            {classes.length === 0 && (
+              <p className="text-gray-500 text-center py-4">No classes available</p>
+            )}
           </div>
-
-          {/* My Classes */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">My Classes</h2>
-          <button
-            onClick={() => setShowAddClassModal(true)}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            Add Class
-          </button>
-        </div>
-        {classes.map((cls) => (
-          <div
-            key={cls.id}
-            className="border-b py-3 last:border-b-0 hover:bg-gray-50 transition-colors"
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-700">{cls.name}</p>
-                <p className="text-sm text-gray-500">{cls.students} Students</p>
-              </div>
-              <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">
-                {cls.pendingAssignments} Pending
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
         </div>
       </>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="flex">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-md p-6 space-y-6">
-        <div className="flex items-center space-x-3 mb-8">
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-            <GraduationCap className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-800">{user.name}</h2>
-            <p className="text-sm text-gray-500">{teacherData.subject}</p>
-          </div>
-        </div>
-
-        <nav className="space-y-2">
+      <div className="w-64 bg-gray-100 p-6">
+        <div className="space-y-4">
           <SidebarMenuItem
-            icon={BarChart2}
+            icon={GraduationCap}
             label="Dashboard"
             section="dashboard"
           />
-          <SidebarMenuItem icon={Users} label="Students" section="students" />
-          <SidebarMenuItem
-            icon={ClipboardList}
-            label="Assignments"
-            section="assignments"
-          />
+          <SidebarMenuItem icon={ClipboardList} label="Tests" section="tests" />
           <SidebarMenuItem icon={BookOpen} label="Courses" section="courses" />
-          <SidebarMenuItem
-            icon={MessageSquare}
-            label="Messages"
-            section="messages"
-          />
-          <SidebarMenuItem
-            icon={Calendar}
-            label="Schedule"
-            section="schedule"
-          />
-          <SidebarMenuItem
-            icon={Settings}
-            label="Settings"
-            section="settings"
-          />
-        </nav>
-
-        <button
-          onClick={logout}
-          className="w-full flex items-center justify-center space-x-2 bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          <span>Logout</span>
-        </button>
+          <SidebarMenuItem icon={BarChart2} label="Analytics" section="analytics" />
+          <SidebarMenuItem icon={MessageSquare} label="Messages" section="messages" />
+          <SidebarMenuItem icon={Calendar} label="Schedule" section="schedule" />
+          <SidebarMenuItem icon={Settings} label="Settings" section="settings" />
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow p-8">
-        {renderMainContent()}
+      <div className="flex-1 p-6">{renderMainContent()}</div>
 
-           {/* Add Class Modal */}
-      {showAddClassModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 w-96">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Add New Class</h2>
-              <button
-                onClick={() => setShowAddClassModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={handleAddClass}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Class Name
-                </label>
-                <input
-                  type="text"
-                  value={newClassName}
-                  onChange={(e) => setNewClassName(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                  placeholder="Enter class name"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Number of Students
-                </label>
-                <input
-                  type="number"
-                  value={newClassStudents}
-                  onChange={(e) => setNewClassStudents(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                  placeholder="Enter number of students"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                Add Class
-              </button>
-            </form>
-          </div>
-        </div>
+      {/* Question Modal */}
+      {showQuestionModal && (
+        <GenerateQuestion
+          showModal={showQuestionModal}
+          closeModal={() => setShowQuestionModal(false)}
+          submitQuestion={handleSubmitQuestion}
+          question={question}
+          setQuestion={setQuestion}
+          selectedClass={selectedClass}
+          setSelectedClass={setSelectedClass}
+          selectedSubject={selectedSubject}
+          setSelectedSubject={setSelectedSubject}
+          selectedQuestionType={selectedQuestionType}
+          setSelectedQuestionType={setSelectedQuestionType}
+          weightage={weightage}
+          setWeightage={setWeightage}
+        />
       )}
-
-        {/* Add Question Modal */}
-        {showQuestionModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-6 w-96">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Add Question</h2>
-                <button
-                  onClick={() => setShowQuestionModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmitQuestion}>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Select Class
-                  </label>
-                  <select
-                    value={selectedClass}
-                    onChange={(e) => setSelectedClass(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  >
-                    <option value="">Select a class</option>
-                    {teacherData.classes.map((cls) => (
-                      <option key={cls.id} value={cls.id}>
-                        {cls.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Select Subject
-                  </label>
-                  <select
-                    value={selectedSubject}
-                    onChange={(e) => setSelectedSubject(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  >
-                    <option value="">Select a subject</option>
-                    {teacherData.subjects.map((subject) => (
-                      <option key={subject} value={subject}>
-                        {subject}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Question
-                  </label>
-                  <textarea
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows="4"
-                    required
-                    placeholder="Enter your question here..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                  Submit Question
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
-  )
-}
+  );
+};
 
 export default TeacherDashboard;

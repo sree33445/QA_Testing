@@ -19,7 +19,7 @@ export async function POST(req) {
 
         // Connect to the database
         const db = await connectToDatabase();
-        const usersCollection = db.collection('userinfo'); // Replace with your collection name
+        const usersCollection = db.collection('userdata'); // Replace with your collection name
 
         // Insert the user data
         const result = await usersCollection.insertOne({

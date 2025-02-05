@@ -234,9 +234,9 @@ const TestPage = () => {
                 <h2 className="text-xl font-medium text-gray-800">
                   Question {currentQuestionIndex + 1}: {currentQuestion.question}
                 </h2>
-                <span className="text-sm bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                {/* <span className="text-sm bg-gray-100 text-gray-600 px-2 py-1 rounded">
                   Weight: {currentQuestion.weightage}
-                </span>
+                </span> */}
               </div>
 
               <div className="space-y-3">

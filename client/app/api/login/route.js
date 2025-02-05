@@ -19,7 +19,7 @@ export async function POST(req) {
 
         // Connect to the database
         const db = await connectToDatabase();
-        const usersCollection = db.collection('userinfo');
+        const usersCollection = db.collection('userdata');
 
         // Find the user in the database
         const user = await usersCollection.findOne({ email });

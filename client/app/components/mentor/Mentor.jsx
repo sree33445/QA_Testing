@@ -21,13 +21,31 @@ const mentorData = {
   subject: "Computer Science",
   subjects: ["Computer Science", "Web Development", "Programming"],
   recentTests: [
-    { id: 1, name: "Mid-term Assessment", date: "2025-01-15", submissions: 45, totalStudents: 50 },
-    { id: 2, name: "Physics Quiz", date: "2025-01-10", submissions: 28, totalStudents: 30 },
-    { id: 3, name: "Programming Test", date: "2025-01-05", submissions: 38, totalStudents: 40 }
+    {
+      id: 1,
+      name: "Mid-term Assessment",
+      date: "2025-01-15",
+      submissions: 45,
+      totalStudents: 50,
+    },
+    {
+      id: 2,
+      name: "Physics Quiz",
+      date: "2025-01-10",
+      submissions: 28,
+      totalStudents: 30,
+    },
+    {
+      id: 3,
+      name: "Programming Test",
+      date: "2025-01-05",
+      submissions: 38,
+      totalStudents: 40,
+    },
   ],
   upcomingTests: [
     { id: 4, name: "Mathematics Final", date: "2025-01-20", enrolled: 55 },
-    { id: 5, name: "Chemistry Lab Test", date: "2025-01-25", enrolled: 35 }
+    { id: 5, name: "Chemistry Lab Test", date: "2025-01-25", enrolled: 35 },
   ],
   recentActivity: [
     {
@@ -48,16 +66,20 @@ const mentorData = {
 const MentorDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
   const [showTestCreator, setShowTestCreator] = useState(false);
+  const [tests, setTests] = useState(mentorData.recentTests);
+
   const [testData, setTestData] = useState({
     name: "",
     date: "",
     time: "",
     duration: "",
     totalMarks: "",
-    description: ""
+    description: "",
   });
-  const [recentActivity, setRecentActivity] = useState(mentorData.recentActivity);
-  
+  const [recentActivity, setRecentActivity] = useState(
+    mentorData.recentActivity
+  );
+
   const { user, logout } = useAuth();
   const router = useRouter();
 
@@ -71,9 +93,25 @@ const MentorDashboard = () => {
     return null;
   }
 
+  const handleAddStudent = () =>{
+    
+  }
+
   const handleSubmitTest = (e) => {
     e.preventDefault();
-    
+
+    const newTest = {
+      id: tests.length + 1,
+      name: testData.name,
+      date: testData.date,
+      time: testData.time,
+      submissions: 0, // Initially, no submissions
+      totalStudents: 0, // Initially, no students enrolled
+    };
+
+    // Add new test to the tests state
+    setTests([newTest, ...tests]);
+
     // Add to recent activity
     const newActivity = {
       id: recentActivity.length + 1,
@@ -90,7 +128,7 @@ const MentorDashboard = () => {
       time: "",
       duration: "",
       totalMarks: "",
-      description: ""
+      description: "",
     });
     setShowTestCreator(false);
   };
@@ -123,6 +161,43 @@ const MentorDashboard = () => {
   );
 
   const renderMainContent = () => {
+    if (activeSection === "tests") {
+      return (
+        <div className="p-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">Tests</h1>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            {tests.map((test) => (
+              <div
+                key={test.id}
+                className="border-b py-3 last:border-b-0 hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-medium text-gray-700">{test.name}</p>
+                    <p className="text-sm text-gray-500">Date: {test.date}</p>
+                    <p className="text-sm text-gray-500">
+                      Start time: {test.time}
+                    </p>
+                  </div>
+                  <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                    {test.submissions}/{test.totalStudents} Submissions
+                  </span>
+                </div>
+                <div className="flex justify-end mt-2">
+                  <button
+                    onClick={() => handleAddStudent(test.id)}
+                    className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    Add Students
+                  </button>
+                </div>{" "}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     if (activeSection !== "dashboard") {
       return <div className="p-8">Section under development</div>;
     }
@@ -239,12 +314,12 @@ const MentorDashboard = () => {
             section="dashboard"
           />
           <SidebarMenuItem icon={Users} label="Students" section="students" />
+          <SidebarMenuItem icon={ClipboardList} label="Tests" section="tests" />
           <SidebarMenuItem
-            icon={ClipboardList}
-            label="Tests"
-            section="tests"
+            icon={BookOpen}
+            label="Resources"
+            section="resources"
           />
-          <SidebarMenuItem icon={BookOpen} label="Resources" section="resources" />
           <SidebarMenuItem
             icon={MessageSquare}
             label="Messages"
@@ -298,7 +373,9 @@ const MentorDashboard = () => {
                     <input
                       type="text"
                       value={testData.name}
-                      onChange={(e) => setTestData({ ...testData, name: e.target.value })}
+                      onChange={(e) =>
+                        setTestData({ ...testData, name: e.target.value })
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
@@ -311,7 +388,9 @@ const MentorDashboard = () => {
                     <input
                       type="date"
                       value={testData.date}
-                      onChange={(e) => setTestData({ ...testData, date: e.target.value })}
+                      onChange={(e) =>
+                        setTestData({ ...testData, date: e.target.value })
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
@@ -324,7 +403,9 @@ const MentorDashboard = () => {
                     <input
                       type="time"
                       value={testData.time}
-                      onChange={(e) => setTestData({ ...testData, time: e.target.value })}
+                      onChange={(e) =>
+                        setTestData({ ...testData, time: e.target.value })
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
@@ -337,7 +418,9 @@ const MentorDashboard = () => {
                     <input
                       type="number"
                       value={testData.duration}
-                      onChange={(e) => setTestData({ ...testData, duration: e.target.value })}
+                      onChange={(e) =>
+                        setTestData({ ...testData, duration: e.target.value })
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
@@ -350,7 +433,9 @@ const MentorDashboard = () => {
                     <input
                       type="number"
                       value={testData.totalMarks}
-                      onChange={(e) => setTestData({ ...testData, totalMarks: e.target.value })}
+                      onChange={(e) =>
+                        setTestData({ ...testData, totalMarks: e.target.value })
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
@@ -362,10 +447,25 @@ const MentorDashboard = () => {
                     </label>
                     <textarea
                       value={testData.description}
-                      onChange={(e) => setTestData({ ...testData, description: e.target.value })}
+                      onChange={(e) =>
+                        setTestData({
+                          ...testData,
+                          description: e.target.value,
+                        })
+                      }
                       className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       rows="3"
                       required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                      Upload File
+                    </label>
+                    <input
+                      type="file"
+                      onChange={(e) => console.log(e.target.files[0])} // Handle file upload
+                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>

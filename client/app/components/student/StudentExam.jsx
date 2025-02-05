@@ -21,6 +21,11 @@ const StudentTestPage = () => {
       difficulty: "Intermediate",
       questions: 30,
       teacher: "Mr. John Doe",
+      startTime: new Date("2025-01-20T10:00:00Z").toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }), // Converts to Indian format like "3:30 PM"
     },
     {
       id: 2,
@@ -30,26 +35,43 @@ const StudentTestPage = () => {
       difficulty: "Beginner",
       questions: 25,
       teacher: "Ms. Jane Smith",
+      startTime: new Date("2025-01-20T11:00:00Z").toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }),
     },
     {
       id: 3,
-      title: "Angular (IT)",
+      title: "Angular Basics",
       subject: "Angular",
       duration: "90 minutes",
       difficulty: "Advanced",
       questions: 40,
       teacher: "Dr. Emily Brown",
+      startTime: new Date("2025-01-20T12:30:00Z").toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }),
     },
     {
       id: 4,
-      title: "PySpark (IT)",
+      title: "PySpark Fundamentals",
       subject: "PySpark",
       duration: "90 minutes",
       difficulty: "Advanced",
       questions: 35,
       teacher: "Prof. Michael Lee",
+      startTime: new Date("2025-01-20T14:00:00Z").toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }),
     },
   ]);
+  
+  
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
@@ -72,15 +94,25 @@ const StudentTestPage = () => {
     return null;
   }
 
-  const handleStartTest = (testId) => {
-    console.log(`Starting test with ID: ${testId}`);
-    router.push("/test");
-
-    // Mark test as completed and save to localStorage
-    const updatedCompletedTests = [...completedTests, testId];
-    setCompletedTests(updatedCompletedTests);
-    localStorage.setItem("completedTests", JSON.stringify(updatedCompletedTests));
+  const handleStartTest = (testId, startTime) => {
+    const now = new Date();
+    const start = new Date(startTime);
+    const fiveMinutesBefore = new Date(start.getTime() - 5 * 60 * 1000);
+    const fifteenMinutesAfter = new Date(start.getTime() + 15 * 60 * 1000);
+  
+    if (now >= fiveMinutesBefore && now <= fifteenMinutesAfter) {
+      console.log(`Starting test with ID: ${testId}`);
+      router.push("/test");
+  
+      // Mark test as completed and save to localStorage
+      const updatedCompletedTests = [...completedTests, testId];
+      setCompletedTests(updatedCompletedTests);
+      localStorage.setItem("completedTests", JSON.stringify(updatedCompletedTests));
+    } else {
+      alert("The test can only be started 5 minutes before or 15 minutes after the scheduled start time.");
+    }
   };
+  
 
   const filteredTests = availableTests.filter((test) => {
     const matchesSearch =
@@ -91,20 +123,20 @@ const StudentTestPage = () => {
     return matchesSearch && matchesDifficulty;
   });
 
-  const difficulties = ["All", "Beginner", "Intermediate", "Advanced"];
+  // const difficulties = ["All", "Beginner", "Intermediate", "Advanced"];
 
-  const getDifficultyTag = (difficulty) => {
-    switch (difficulty.toLowerCase()) {
-      case "beginner":
-        return "text-blue-700 bg-blue-50";
-      case "intermediate":
-        return "text-slate-700 bg-slate-50";
-      case "advanced":
-        return "text-gray-700 bg-gray-50";
-      default:
-        return "text-slate-700 bg-slate-50";
-    }
-  };
+  // const getDifficultyTag = (difficulty) => {
+  //   switch (difficulty.toLowerCase()) {
+  //     case "beginner":
+  //       return "text-blue-700 bg-blue-50";
+  //     case "intermediate":
+  //       return "text-slate-700 bg-slate-50";
+  //     case "advanced":
+  //       return "text-gray-700 bg-gray-50";
+  //     default:
+  //       return "text-slate-700 bg-slate-50";
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -144,7 +176,7 @@ const StudentTestPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex gap-3 flex-wrap">
+            {/* <div className="flex gap-3 flex-wrap">
               {difficulties.map((difficulty) => (
                 <button
                   key={difficulty}
@@ -159,7 +191,7 @@ const StudentTestPage = () => {
                   {difficulty}
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {filteredTests.length === 0 && (
@@ -184,13 +216,13 @@ const StudentTestPage = () => {
                   <h2 className="text-2xl font-medium text-gray-900 leading-tight">
                     {test.title}
                   </h2>
-                  <span
+                  {/* <span
                     className={`inline-block px-4 py-2 text-sm font-medium rounded-full ${getDifficultyTag(
                       test.difficulty
                     )}`}
                   >
                     {test.difficulty}
-                  </span>
+                  </span> */}
                 </div>
                 <div className="grid grid-cols-2 gap-6 text-base">
                   <div className="flex items-center gap-3 text-gray-500">
@@ -208,6 +240,10 @@ const StudentTestPage = () => {
                 <div className="mb-4 text-base text-gray-600">
                   <span className="font-medium">Teacher/Mentor: </span>
                   <span>{test.teacher}</span>
+                </div>
+                <div className="mb-4 text-base text-gray-600">
+                  <span className="font-medium">Start Time : </span>
+                  <span>{test.startTime}</span>
                 </div>
                 <div className="flex justify-between items-center mb-6 text-base text-gray-600">
                   <span>Total Questions</span>
