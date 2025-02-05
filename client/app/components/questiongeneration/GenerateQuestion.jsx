@@ -1,27 +1,53 @@
-'use client'
+"use client"
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const GenerateQuestion = () => {
   const [question, setQuestion] = useState('');
   const [questionType, setQuestionType] = useState('objective');
   const [options, setOptions] = useState(['', '', '', '']);
   const [answer, setAnswer] = useState('');
-  
+
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
     newOptions[index] = value;
     setOptions(newOptions);
   };
 
-  const handleSubmit = (e) => {
+  const addOption = () => {
+    setOptions([...options, '']);
+  };
+
+  const removeOption = (index) => {
+    const newOptions = options.filter((_, i) => i !== index);
+    setOptions(newOptions);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const questionData = {
-      question,
-      questionType,
+      subject: "General Knowledge", // Example subject
+      question_type: questionType,
+      question_text: question,
       options: questionType === 'objective' ? options : [],
-      answer,
+      correct_option: questionType === 'objective' ? answer : null,
+      ideal_keywords: questionType === 'descriptive' ? answer.split(',') : [],
+      weightage: 1, // Default weightage
     };
-    console.log('Submitted Question:', questionData);
+
+    try {
+      const response = await axios.post(
+        questionType === 'objective'
+          ? 'http://localhost:8000/add-question-mcq/'
+          : 'http://localhost:8000/add-question-descriptive/',
+        questionData
+      );
+      console.log('Question added successfully:', response.data);
+      alert('Question added successfully!');
+    } catch (error) {
+      console.error('Error adding question:', error);
+      alert('Failed to add question. Check the console for details.');
+    }
   };
 
   return (
@@ -52,20 +78,37 @@ const GenerateQuestion = () => {
           <div className="mb-4">
             <label className="block text-gray-700">Options:</label>
             {options.map((option, index) => (
-              <input
-                key={index}
-                type="text"
-                className="w-full p-2 border rounded mt-1"
-                placeholder={`Option ${index + 1}`}
-                value={option}
-                onChange={(e) => handleOptionChange(index, e.target.value)}
-                required
-              />
+              <div key={index} className="flex items-center mb-2">
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded mt-1"
+                  placeholder={`Option ${index + 1}`}
+                  value={option}
+                  onChange={(e) => handleOptionChange(index, e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="ml-2 bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                  onClick={() => removeOption(index)}
+                >
+                  Remove
+                </button>
+              </div>
             ))}
+            <button
+              type="button"
+              className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
+              onClick={addOption}
+            >
+              Add Option
+            </button>
           </div>
         )}
         <div className="mb-4">
-          <label className="block text-gray-700">Correct Answer:</label>
+          <label className="block text-gray-700">
+            {questionType === 'objective' ? 'Correct Answer:' : 'Ideal Keywords (comma-separated):'}
+          </label>
           <input
             type="text"
             className="w-full p-2 border rounded mt-1"
