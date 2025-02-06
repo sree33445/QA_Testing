@@ -336,22 +336,32 @@ const TeacherDashboard = () => {
 
       {/* Question Modal */}
       {showQuestionModal && (
-        <GenerateQuestion
-          showModal={showQuestionModal}
-          closeModal={() => setShowQuestionModal(false)}
-          submitQuestion={handleSubmitQuestion}
-          question={question}
-          setQuestion={setQuestion}
-          selectedClass={selectedClass}
-          setSelectedClass={setSelectedClass}
-          selectedSubject={selectedSubject}
-          setSelectedSubject={setSelectedSubject}
-          selectedQuestionType={selectedQuestionType}
-          setSelectedQuestionType={setSelectedQuestionType}
-          weightage={weightage}
-          setWeightage={setWeightage}
-        />
-      )}
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg relative w-[500px]">
+      <button 
+        onClick={() => setShowQuestionModal(false)} 
+        className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+      >
+        <X className="w-6 h-6" />
+      </button>
+      <GenerateQuestion
+        closeModal={() => setShowQuestionModal(false)}
+        submitQuestion={handleSubmitQuestion}
+        question={question}
+        setQuestion={setQuestion}
+        selectedClass={selectedClass}
+        setSelectedClass={setSelectedClass}
+        selectedSubject={selectedSubject}
+        setSelectedSubject={setSelectedSubject}
+        selectedQuestionType={selectedQuestionType}
+        setSelectedQuestionType={setSelectedQuestionType}
+        weightage={weightage}
+        setWeightage={setWeightage}
+      />
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

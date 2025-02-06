@@ -572,6 +572,12 @@ video {
 .top-4 {
   top: 1rem;
 }
+.right-3 {
+  right: 0.75rem;
+}
+.top-3 {
+  top: 0.75rem;
+}
 .z-0 {
   z-index: 0;
 }
@@ -607,6 +613,9 @@ video {
 .mb-8 {
   margin-bottom: 2rem;
 }
+.ml-2 {
+  margin-left: 0.5rem;
+}
 .mr-3 {
   margin-right: 0.75rem;
 }
@@ -624,9 +633,6 @@ video {
 }
 .mt-8 {
   margin-top: 2rem;
-}
-.ml-2 {
-  margin-left: 0.5rem;
 }
 .block {
   display: block;
@@ -696,6 +702,9 @@ video {
 }
 .w-full {
   width: 100%;
+}
+.w-\[500px\] {
+  width: 500px;
 }
 .max-w-2xl {
   max-width: 42rem;
