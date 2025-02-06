@@ -87,6 +87,11 @@ const TeacherDashboard = () => {
     return null;
   }
 
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
+
   const handleAddClass = (e) => {
     e.preventDefault();
 
@@ -160,12 +165,13 @@ const TeacherDashboard = () => {
     </div>
   );
 
-  const SidebarMenuItem = ({ icon: Icon, label, section }) => (
+  const SidebarMenuItem = ({ icon: Icon, label, section, onClick, isLogout = false }) => (
     <button
-      onClick={() => setActiveSection(section)}
-      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all 
-        ${activeSection === section ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100 text-gray-600"}`}
-    >
+    onClick={onClick || (() => setActiveSection(section))}
+    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all 
+      ${isLogout ? "text-red-600 hover:bg-red-100 hover:text-red-800" : 
+      activeSection === section ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100 text-gray-600"}`}
+  >
       <Icon className="w-5 h-5" />
       <span className="font-medium">{label}</span>
     </button>
@@ -328,6 +334,7 @@ const TeacherDashboard = () => {
           <SidebarMenuItem icon={MessageSquare} label="Messages" section="messages" />
           <SidebarMenuItem icon={Calendar} label="Schedule" section="schedule" />
           <SidebarMenuItem icon={Settings} label="Settings" section="settings" />
+          <SidebarMenuItem icon={LogOut} label='Logout' onClick={handleLogout} />
         </div>
       </div>
 

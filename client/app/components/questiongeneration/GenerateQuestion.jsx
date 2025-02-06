@@ -1,12 +1,12 @@
-"use client"
-import React, { useState } from 'react';
-import axios from 'axios';
+"use client";
+import React, { useState } from "react";
+import axios from "axios";
 
-const GenerateQuestion = () => {
-  const [question, setQuestion] = useState('');
-  const [questionType, setQuestionType] = useState('objective');
-  const [options, setOptions] = useState(['', '', '', '']);
-  const [answer, setAnswer] = useState('');
+const GenerateQuestion = ({ closeModal }) => { // Accept closeModal as prop
+  const [question, setQuestion] = useState("");
+  const [questionType, setQuestionType] = useState("objective");
+  const [options, setOptions] = useState(["", "", "", ""]);
+  const [answer, setAnswer] = useState("");
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
@@ -15,7 +15,7 @@ const GenerateQuestion = () => {
   };
 
   const addOption = () => {
-    setOptions([...options, '']);
+    setOptions([...options, ""]);
   };
 
   const removeOption = (index) => {
@@ -29,24 +29,36 @@ const GenerateQuestion = () => {
       subject: "General Knowledge", // Example subject
       question_type: questionType,
       question_text: question,
-      options: questionType === 'objective' ? options : [],
-      correct_option: questionType === 'objective' ? answer : null,
-      ideal_keywords: questionType === 'descriptive' ? answer.split(',') : [],
+      options: questionType === "objective" ? options : [],
+      correct_option: questionType === "objective" ? answer : null,
+      ideal_keywords: questionType === "descriptive" ? answer.split(",") : [],
       weightage: 1, // Default weightage
     };
 
     try {
       const response = await axios.post(
-        questionType === 'objective'
-          ? 'http://localhost:8000/add-question-mcq/'
-          : 'http://localhost:8000/add-question-descriptive/',
+        questionType === "objective"
+          ? "http://localhost:8000/add-question-mcq/"
+          : "http://localhost:8000/add-question-descriptive/",
         questionData
       );
-      console.log('Question added successfully:', response.data);
-      alert('Question added successfully!');
+      console.log("Question added successfully:", response.data);
+      alert("Question added successfully!");
+
+      // Reset the form fields
+      setQuestion("");
+      setQuestionType("objective");
+      setOptions(["", "", "", ""]);
+      setAnswer("");
+
+      // Close the modal after successful submission
+      if (closeModal) {
+        closeModal();
+      }
+
     } catch (error) {
-      console.error('Error adding question:', error);
-      alert('Failed to add question. Check the console for details.');
+      console.error("Error adding question:", error);
+      alert("Failed to add question. Check the console for details.");
     }
   };
 
@@ -74,7 +86,7 @@ const GenerateQuestion = () => {
             <option value="descriptive">Descriptive</option>
           </select>
         </div>
-        {questionType === 'objective' && (
+        {questionType === "objective" && (
           <div className="mb-4">
             <label className="block text-gray-700">Options:</label>
             {options.map((option, index) => (
@@ -107,7 +119,7 @@ const GenerateQuestion = () => {
         )}
         <div className="mb-4">
           <label className="block text-gray-700">
-            {questionType === 'objective' ? 'Correct Answer:' : 'Ideal Keywords (comma-separated):'}
+            {questionType === "objective" ? "Correct Answer:" : "Ideal Keywords (comma-separated):"}
           </label>
           <input
             type="text"
